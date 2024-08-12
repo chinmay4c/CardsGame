@@ -129,13 +129,19 @@ function startTimer() {
 
 function endGame() {
     clearInterval(timerInterval);
-    const finalScore = score + Math.max(0, 100 - gameTime - moves);
+    const finalScore = calculateFinalScore();
     finalStats.innerHTML = `
         <p>Time: ${gameTime}s</p>
         <p>Moves: ${moves}</p>
         <p>Final Score: ${finalScore}</p>
     `;
     modal.style.display = 'block';
+}
+
+function calculateFinalScore() {
+    const timeBonus = Math.max(0, 100 - gameTime);
+    const movesPenalty = Math.max(0, moves - cards.length);
+    return score + timeBonus - movesPenalty;
 }
 
 function updateDisplays() {
@@ -157,15 +163,35 @@ function createParticles() {
         particle.style.left = `${Math.random() * 100}%`;
         particle.style.top = `${Math.random() * 100}%`;
         particle.style.animationDelay = `${Math.random() * 15}s`;
+        particle.style.backgroundColor = getRandomColor();
         particlesContainer.appendChild(particle);
     }
 }
 
-restartBtn.addEventListener('click', initializeGame);
-difficultySelect.addEventListener('change', initializeGame);
-playAgainBtn.addEventListener('click', () => {
+function getRandomColor() {
+    const colors = ['var(--primary-color)', 'var(--secondary-color)', 'var(--tertiary-color)'];
+    return colors[Math.floor(Math.random() * colors.length)];
+}
+
+function resetGame() {
     modal.style.display = 'none';
     initializeGame();
-});
+}
 
+restartBtn.addEventListener('click', resetGame);
+difficultySelect.addEventListener('change', resetGame);
+playAgainBtn.addEventListener('click', resetGame);
+
+// Initialize the game
 initializeGame();
+
+// Add keyboard support
+document.addEventListener('keydown', (e) => {
+    if (e.code === 'Space' || e.code === 'Enter') {
+        if (modal.style.display === 'block') {
+            resetGame();
+        } else {
+            restartBtn.click();
+        }
+    }
+});
