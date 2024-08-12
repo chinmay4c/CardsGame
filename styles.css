@@ -1,3 +1,11 @@
+:root {
+    --primary-color: #4ed9ff;
+    --secondary-color: #ff61d8;
+    --background-dark: #0c0e1a;
+    --background-light: #1f2b4d;
+    --card-color: #2a3d66;
+}
+
 body {
     font-family: 'Exo 2', sans-serif;
     display: flex;
@@ -5,7 +13,7 @@ body {
     align-items: center;
     min-height: 100vh;
     margin: 0;
-    background: linear-gradient(45deg, #0c0e1a, #1f2b4d);
+    background: radial-gradient(ellipse at bottom, var(--background-light) 0%, var(--background-dark) 100%);
     color: #ffffff;
     overflow: hidden;
 }
@@ -19,21 +27,24 @@ body {
     position: relative;
     z-index: 1;
     backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 h1 {
     margin-bottom: 1rem;
-    color: #4ed9ff;
-    text-shadow: 0 0 10px #4ed9ff;
+    color: var(--primary-color);
+    text-shadow: 0 0 10px var(--primary-color);
     animation: cosmic-pulse 2s ease-in-out infinite alternate;
+    font-size: 2.5rem;
+    letter-spacing: 2px;
 }
 
 @keyframes cosmic-pulse {
     from {
-        text-shadow: 0 0 10px #4ed9ff, 0 0 20px #4ed9ff;
+        text-shadow: 0 0 10px var(--primary-color), 0 0 20px var(--primary-color);
     }
     to {
-        text-shadow: 0 0 20px #4ed9ff, 0 0 40px #4ed9ff, 0 0 60px #4ed9ff;
+        text-shadow: 0 0 20px var(--primary-color), 0 0 40px var(--primary-color), 0 0 60px var(--primary-color);
     }
 }
 
@@ -42,19 +53,21 @@ h1 {
     justify-content: space-between;
     margin-bottom: 1rem;
     font-size: 1.2rem;
-    color: #b8e4ff;
+    color: var(--secondary-color);
+    text-shadow: 0 0 5px var(--secondary-color);
 }
 
 #game-board {
     display: grid;
     gap: 10px;
     margin-bottom: 1rem;
+    perspective: 1000px;
 }
 
 .card {
     width: 80px;
     height: 120px;
-    background-color: #2a3d66;
+    background-color: var(--card-color);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -88,14 +101,17 @@ h1 {
 }
 
 .card .front {
-    background-color: #2a3d66;
-    background-image: linear-gradient(45deg, #2a3d66 25%, #354a7e 25%, #354a7e 50%, #2a3d66 50%, #2a3d66 75%, #354a7e 75%, #354a7e 100%);
-    background-size: 20px 20px;
+    background-color: var(--card-color);
+    background-image: 
+        radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.05) 0%, transparent 20%),
+        radial-gradient(circle at 90% 80%, rgba(255, 255, 255, 0.05) 0%, transparent 20%);
+    box-shadow: inset 0 0 10px rgba(78, 217, 255, 0.2);
 }
 
 .card .back {
-    background-color: #4ed9ff;
+    background-color: var(--primary-color);
     transform: rotateY(180deg);
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
 .controls {
@@ -110,17 +126,20 @@ button, select {
     font-size: 1rem;
     padding: 0.5rem 1rem;
     cursor: pointer;
-    background-color: #4ed9ff;
-    color: #0c0e1a;
+    background-color: var(--primary-color);
+    color: var(--background-dark);
     border: none;
     border-radius: 5px;
-    transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: bold;
 }
 
 button:hover, select:hover {
-    background-color: #7ae7ff;
-    transform: scale(1.05);
-    box-shadow: 0 0 15px rgba(78, 217, 255, 0.5);
+    background-color: var(--secondary-color);
+    transform: scale(1.05) translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 97, 216, 0.4);
 }
 
 .modal {
@@ -132,10 +151,11 @@ button:hover, select:hover {
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
 }
 
 .modal-content {
-    background-color: rgba(42, 61, 102, 0.9);
+    background: linear-gradient(135deg, rgba(42, 61, 102, 0.9), rgba(78, 217, 255, 0.9));
     margin: 15% auto;
     padding: 20px;
     border-radius: 20px;
@@ -147,14 +167,14 @@ button:hover, select:hover {
 }
 
 @keyframes cosmic-fade-in {
-    from { opacity: 0; transform: scale(0.9); }
-    to { opacity: 1; transform: scale(1); }
+    from { opacity: 0; transform: scale(0.9) translateY(-20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
 }
 
 #progress-bar-container {
     width: 100%;
     height: 10px;
-    background-color: #2a3d66;
+    background-color: rgba(255, 255, 255, 0.1);
     border-radius: 5px;
     margin-top: 1rem;
     overflow: hidden;
@@ -163,7 +183,7 @@ button:hover, select:hover {
 #progress-bar {
     width: 0%;
     height: 100%;
-    background-color: #4ed9ff;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
     transition: width 0.5s ease-in-out;
 }
 
@@ -179,16 +199,19 @@ button:hover, select:hover {
 
 .particle {
     position: absolute;
-    background-color: #4ed9ff;
+    background-color: var(--primary-color);
     width: 2px;
     height: 2px;
     border-radius: 50%;
     animation: float 15s infinite;
+    opacity: 0.6;
 }
 
 @keyframes float {
-    0%, 100% { transform: translateY(0) translateX(0); }
-    50% { transform: translateY(-100px) translateX(50px); }
+    0%, 100% { transform: translateY(0) translateX(0) scale(1); opacity: 0.6; }
+    25% { transform: translateY(-100px) translateX(50px) scale(1.2); opacity: 1; }
+    50% { transform: translateY(-50px) translateX(100px) scale(0.8); opacity: 0.8; }
+    75% { transform: translateY(-150px) translateX(-50px) scale(1.1); opacity: 0.9; }
 }
 
 @media (max-width: 600px) {
@@ -196,5 +219,18 @@ button:hover, select:hover {
         width: 60px;
         height: 90px;
         font-size: 1.5rem;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    .game-info {
+        font-size: 1rem;
+    }
+
+    button, select {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
     }
 }

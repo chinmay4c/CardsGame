@@ -7,7 +7,8 @@ const scoreDisplay = document.getElementById('score');
 const modal = document.getElementById('victory-modal');
 const finalStats = document.getElementById('final-stats');
 const playAgainBtn = document.getElementById('play-again-btn');
-const starsContainer = document.getElementById('stars-container');
+const progressBar = document.getElementById('progress-bar');
+const particlesContainer = document.getElementById('particles');
 
 const cardSymbols = ['🚀', '🛸', '🛰️', '🪐', '🌠', '🌟', '🌙', '🌞', '👽', '👾', '🤖', '💫', '☄️', '🌈', '🌌', '🔭', '🛑', '⭐', '🌍', '🌎', '🌏', '🌑', '🌒', '🌓', '🌔', '🌕', '🌖', '🌗', '🌘', '🌚', '🌝', '🌛'];
 
@@ -65,7 +66,8 @@ function initializeGame() {
         gameBoard.appendChild(card);
     });
 
-    createStars();
+    updateProgressBar();
+    createParticles();
 }
 
 function flipCard() {
@@ -95,8 +97,8 @@ function checkMatch() {
         score += 10;
         flippedCards = [];
 
-        card1.style.animation = 'pulse 0.5s';
-        card2.style.animation = 'pulse 0.5s';
+        card1.style.animation = 'cosmic-pulse 0.5s';
+        card2.style.animation = 'cosmic-pulse 0.5s';
 
         setTimeout(() => {
             card1.style.animation = '';
@@ -115,6 +117,7 @@ function checkMatch() {
     }
 
     updateDisplays();
+    updateProgressBar();
 }
 
 function startTimer() {
@@ -127,7 +130,11 @@ function startTimer() {
 function endGame() {
     clearInterval(timerInterval);
     const finalScore = score + Math.max(0, 100 - gameTime - moves);
-    finalStats.textContent = `Time: ${gameTime}s | Moves: ${moves} | Final Score: ${finalScore}`;
+    finalStats.innerHTML = `
+        <p>Time: ${gameTime}s</p>
+        <p>Moves: ${moves}</p>
+        <p>Final Score: ${finalScore}</p>
+    `;
     modal.style.display = 'block';
 }
 
@@ -137,15 +144,20 @@ function updateDisplays() {
     scoreDisplay.textContent = `Score: ${score}`;
 }
 
-function createStars() {
-    starsContainer.innerHTML = '';
+function updateProgressBar() {
+    const progress = (matchedPairs / (cards.length / 2)) * 100;
+    progressBar.style.width = `${progress}%`;
+}
+
+function createParticles() {
+    particlesContainer.innerHTML = '';
     for (let i = 0; i < 50; i++) {
-        const star = document.createElement('div');
-        star.classList.add('star');
-        star.style.left = `${Math.random() * 100}%`;
-        star.style.top = `${Math.random() * 100}%`;
-        star.style.animationDelay = `${Math.random() * 5}s`;
-        starsContainer.appendChild(star);
+        const particle = document.createElement('div');
+        particle.classList.add('particle');
+        particle.style.left = `${Math.random() * 100}%`;
+        particle.style.top = `${Math.random() * 100}%`;
+        particle.style.animationDelay = `${Math.random() * 15}s`;
+        particlesContainer.appendChild(particle);
     }
 }
 
