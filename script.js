@@ -4,9 +4,13 @@ const difficultySelect = document.getElementById('difficulty');
 const timerDisplay = document.getElementById('timer');
 const movesDisplay = document.getElementById('moves');
 const highScoreDisplay = document.getElementById('high-score');
+const comboDisplay = document.getElementById('combo');
 const muteBtn = document.getElementById('mute-btn');
+const themeBtn = document.getElementById('theme-btn');
+const revealBtn = document.getElementById('reveal-btn');
+const freezeBtn = document.getElementById('freeze-btn');
 
-const cardSymbols = ['🚀', '🛸', '🛰️', '🪐', '🌠', '🌟', '🌙', '🌞', '👽', '👾', '🤖', '💫', '☄️', '🌈', '🌌', '🔭', '🛑', '⭐', '🌍', '🌎', '🌏', '🌑', '🌒', '🌓', '🌔', '🌕', '🌖', '🌗', '🌘', '🌚', '🌝', '🌛'];
+const cardSymbols = ['🌌', '🌠', '🚀', '🛸', '🛰️', '🪐', '🌟', '🌙', '🌞', '👽', '🤖', '💫', '☄️', '🌈', '🔭', '🛑', '⭐', '🌍', '🌎', '🌏', '🌑', '🌒', '🌓', '🌔', '🌕', '🌖', '🌗', '🌘', '🌚', '🌝', '🌛', '🌜'];
 
 let cards = [];
 let flippedCards = [];
@@ -17,10 +21,15 @@ let timerInterval;
 let gameTime = 0;
 let highScore = localStorage.getItem('highScore') || 0;
 let isMuted = false;
+let isDarkTheme = true;
+let combo = 1;
+let revealPowerups = 3;
+let freezePowerups = 1;
 
-const flipSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-quick-jump-arcade-game-239.mp3');
-const matchSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-arcade-game-complete-or-approved-mission-205.mp3');
-const victorySound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-winning-chimes-2015.mp3');
+const flipSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-fast-small-sweep-transition-166.mp3');
+const matchSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-magical-sparkle-shimmer-2877.mp3');
+const victorySound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3');
+const comboSound = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-arcade-retro-changing-tab-206.mp3');
 
 highScoreDisplay.textContent = `High Score: ${highScore}`;
 
@@ -51,9 +60,9 @@ function initializeGame() {
     moves = 0;
     gameTime = 0;
     gameStarted = false;
+    combo = 1;
     clearInterval(timerInterval);
-    timerDisplay.textContent = 'Time: 0s';
-    movesDisplay.textContent = 'Moves: 0';
+    updateDisplays();
 
     const difficulty = difficultySelect.value;
     let gridSize;
@@ -81,6 +90,10 @@ function initializeGame() {
         cards.push(card);
         gameBoard.appendChild(card);
     });
+
+    revealPowerups = 3;
+    freezePowerups = 1;
+    updatePowerupButtons();
 }
 
 function flipCard() {
@@ -89,7 +102,7 @@ function flipCard() {
         gameStarted = true;
     }
 
-    if (flippedCards.length < 2 && !this.classList.contains('flipped')) {
+    if (flippedCards.length < 2 && !this.classList.contains('flipped') && !this.classList.contains('matched')) {
         this.classList.add('flipped');
         flippedCards.push(this);
 
@@ -97,7 +110,7 @@ function flipCard() {
 
         if (flippedCards.length === 2) {
             moves++;
-            movesDisplay.textContent = `Moves: ${moves}`;
+            updateDisplays();
             setTimeout(checkMatch, 500);
         }
     }
@@ -116,28 +129,38 @@ function checkMatch() {
 
         if (!isMuted) matchSound.play();
 
+        combo++;
+        if (combo > 1 && !isMuted) comboSound.play();
+
         if (matchedPairs === cards.length / 2) {
-            clearInterval(timerInterval);
-            if (!isMuted) victorySound.play();
-            updateHighScore();
-            setTimeout(() => {
-                alert(`Congratulations! You won in ${gameTime} seconds with ${moves} moves!`);
-            }, 500);
+            endGame();
         }
     } else {
         setTimeout(() => {
             card1.classList.remove('flipped');
             card2.classList.remove('flipped');
             flippedCards = [];
+            combo = 1;
         }, 1000);
     }
+
+    updateDisplays();
 }
 
 function startTimer() {
     timerInterval = setInterval(() => {
         gameTime++;
-        timerDisplay.textContent = `Time: ${gameTime}s`;
+        updateDisplays();
     }, 1000);
+}
+
+function endGame() {
+    clearInterval(timerInterval);
+    if (!isMuted) victorySound.play();
+    updateHighScore();
+    setTimeout(() => {
+        alert(`Congratulations! You won in ${gameTime} seconds with ${moves} moves!`);
+    }, 500);
 }
 
 function updateHighScore() {
@@ -149,23 +172,27 @@ function updateHighScore() {
     }
 }
 
-restartBtn.addEventListener('click', initializeGame);
-difficultySelect.addEventListener('change', initializeGame);
-muteBtn.addEventListener('click', () => {
-    isMuted = !isMuted;
-    muteBtn.textContent = isMuted ? 'Unmute Sound' : 'Mute Sound';
-});
+function updateDisplays() {
+    timerDisplay.textContent = `Time: ${gameTime}s`;
+    movesDisplay.textContent = `Moves: ${moves}`;
+    comboDisplay.textContent = `Combo: x${combo}`;
+}
 
-initializeGame();
+function updatePowerupButtons() {
+    revealBtn.textContent = `Reveal (${revealPowerups})`;
+    freezeBtn.textContent = `Freeze Time (${freezePowerups})`;
+    revealBtn.disabled = revealPowerups === 0;
+    freezeBtn.disabled = freezePowerups === 0;
+}
 
-// Initialize particle.js
-particlesJS('particles-js', {
-    particles: {
-        number: { value: 100 },
-        color: { value: '#ffffff' },
-        shape: { type: 'circle' },
-        opacity: { value: 0.5, random: true },
-        size: { value: 3, random: true },
-        move: { enable: true, speed: 1 }
+function toggleTheme() {
+    isDarkTheme = !isDarkTheme;
+    document.body.classList.toggle('light-theme');
+    themeBtn.textContent = isDarkTheme ? 'Light Theme' : 'Dark Theme';
+}
+
+function revealCards() {
+    if (revealPowerups > 0) {
+        revealPowerups--;
     }
-});
+}
