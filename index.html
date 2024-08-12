@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Memory Match</title>
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="game-container">
@@ -17,22 +17,25 @@
         </div>
         <div id="game-board"></div>
         <div class="controls">
-            <button id="restart-btn">Restart Game</button>
+            <button id="restart-btn">New Game</button>
             <select id="difficulty">
-                <option value="4">Easy (4x4)</option>
-                <option value="6">Medium (6x6)</option>
-                <option value="8">Hard (8x8)</option>
+                <option value="4">Novice (4x4)</option>
+                <option value="6">Explorer (6x6)</option>
+                <option value="8">Cosmic Master (8x8)</option>
             </select>
         </div>
-        <div id="stars-container"></div>
+        <div id="progress-bar-container">
+            <div id="progress-bar"></div>
+        </div>
     </div>
     <div id="victory-modal" class="modal">
         <div class="modal-content">
-            <h2>Congratulations!</h2>
+            <h2>Cosmic Victory!</h2>
             <p id="final-stats"></p>
-            <button id="play-again-btn">Play Again</button>
+            <button id="play-again-btn">Embark Again</button>
         </div>
     </div>
+    <div id="particles"></div>
     <script src="script.js"></script>
 </body>
 </html>

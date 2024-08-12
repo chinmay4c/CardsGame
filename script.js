@@ -4,6 +4,10 @@ const difficultySelect = document.getElementById('difficulty');
 const timerDisplay = document.getElementById('timer');
 const movesDisplay = document.getElementById('moves');
 const scoreDisplay = document.getElementById('score');
+const modal = document.getElementById('victory-modal');
+const finalStats = document.getElementById('final-stats');
+const playAgainBtn = document.getElementById('play-again-btn');
+const starsContainer = document.getElementById('stars-container');
 
 const cardSymbols = ['🚀', '🛸', '🛰️', '🪐', '🌠', '🌟', '🌙', '🌞', '👽', '👾', '🤖', '💫', '☄️', '🌈', '🌌', '🔭', '🛑', '⭐', '🌍', '🌎', '🌏', '🌑', '🌒', '🌓', '🌔', '🌕', '🌖', '🌗', '🌘', '🌚', '🌝', '🌛'];
 
@@ -51,7 +55,7 @@ function initializeGame() {
     gameBoard.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
 
     const symbolsNeeded = (gridSize * gridSize) / 2;
-    const gameSymbols = cardSymbols.slice(0, symbolsNeeded);
+    const gameSymbols = shuffleArray(cardSymbols).slice(0, symbolsNeeded);
     const symbols = [...gameSymbols, ...gameSymbols];
     shuffleArray(symbols);
 
@@ -60,6 +64,8 @@ function initializeGame() {
         cards.push(card);
         gameBoard.appendChild(card);
     });
+
+    createStars();
 }
 
 function flipCard() {
@@ -89,6 +95,14 @@ function checkMatch() {
         score += 10;
         flippedCards = [];
 
+        card1.style.animation = 'pulse 0.5s';
+        card2.style.animation = 'pulse 0.5s';
+
+        setTimeout(() => {
+            card1.style.animation = '';
+            card2.style.animation = '';
+        }, 500);
+
         if (matchedPairs === cards.length / 2) {
             endGame();
         }
@@ -113,9 +127,8 @@ function startTimer() {
 function endGame() {
     clearInterval(timerInterval);
     const finalScore = score + Math.max(0, 100 - gameTime - moves);
-    setTimeout(() => {
-        alert(`Congratulations! You won!\nTime: ${gameTime}s\nMoves: ${moves}\nFinal Score: ${finalScore}`);
-    }, 500);
+    finalStats.textContent = `Time: ${gameTime}s | Moves: ${moves} | Final Score: ${finalScore}`;
+    modal.style.display = 'block';
 }
 
 function updateDisplays() {
@@ -124,7 +137,23 @@ function updateDisplays() {
     scoreDisplay.textContent = `Score: ${score}`;
 }
 
+function createStars() {
+    starsContainer.innerHTML = '';
+    for (let i = 0; i < 50; i++) {
+        const star = document.createElement('div');
+        star.classList.add('star');
+        star.style.left = `${Math.random() * 100}%`;
+        star.style.top = `${Math.random() * 100}%`;
+        star.style.animationDelay = `${Math.random() * 5}s`;
+        starsContainer.appendChild(star);
+    }
+}
+
 restartBtn.addEventListener('click', initializeGame);
 difficultySelect.addEventListener('change', initializeGame);
+playAgainBtn.addEventListener('click', () => {
+    modal.style.display = 'none';
+    initializeGame();
+});
 
 initializeGame();

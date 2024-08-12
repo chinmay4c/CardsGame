@@ -1,38 +1,39 @@
 body {
-    font-family: 'Orbitron', sans-serif;
+    font-family: 'Exo 2', sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
     margin: 0;
-    background: linear-gradient(45deg, #1a1a2e, #16213e);
+    background: linear-gradient(45deg, #0c0e1a, #1f2b4d);
     color: #ffffff;
     overflow: hidden;
 }
 
 .game-container {
     text-align: center;
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.05);
     padding: 2rem;
     border-radius: 20px;
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+    box-shadow: 0 0 30px rgba(78, 217, 255, 0.2);
     position: relative;
     z-index: 1;
+    backdrop-filter: blur(10px);
 }
 
 h1 {
     margin-bottom: 1rem;
-    color: #00fff2;
-    text-shadow: 0 0 10px #00fff2;
-    animation: glow 2s ease-in-out infinite alternate;
+    color: #4ed9ff;
+    text-shadow: 0 0 10px #4ed9ff;
+    animation: cosmic-pulse 2s ease-in-out infinite alternate;
 }
 
-@keyframes glow {
+@keyframes cosmic-pulse {
     from {
-        text-shadow: 0 0 5px #00fff2, 0 0 10px #00fff2;
+        text-shadow: 0 0 10px #4ed9ff, 0 0 20px #4ed9ff;
     }
     to {
-        text-shadow: 0 0 10px #00fff2, 0 0 20px #00fff2, 0 0 30px #00fff2;
+        text-shadow: 0 0 20px #4ed9ff, 0 0 40px #4ed9ff, 0 0 60px #4ed9ff;
     }
 }
 
@@ -40,6 +41,8 @@ h1 {
     display: flex;
     justify-content: space-between;
     margin-bottom: 1rem;
+    font-size: 1.2rem;
+    color: #b8e4ff;
 }
 
 #game-board {
@@ -51,20 +54,21 @@ h1 {
 .card {
     width: 80px;
     height: 120px;
-    background-color: #0f3460;
+    background-color: #2a3d66;
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 2rem;
     cursor: pointer;
     border-radius: 10px;
-    transition: transform 0.6s;
+    transition: transform 0.6s, box-shadow 0.3s;
     transform-style: preserve-3d;
-    box-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
+    box-shadow: 0 0 15px rgba(78, 217, 255, 0.3);
 }
 
 .card:hover {
     transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(78, 217, 255, 0.5);
 }
 
 .card.flipped {
@@ -84,11 +88,13 @@ h1 {
 }
 
 .card .front {
-    background-color: #0f3460;
+    background-color: #2a3d66;
+    background-image: linear-gradient(45deg, #2a3d66 25%, #354a7e 25%, #354a7e 50%, #2a3d66 50%, #2a3d66 75%, #354a7e 75%, #354a7e 100%);
+    background-size: 20px 20px;
 }
 
 .card .back {
-    background-color: #e94560;
+    background-color: #4ed9ff;
     transform: rotateY(180deg);
 }
 
@@ -96,39 +102,25 @@ h1 {
     display: flex;
     justify-content: center;
     gap: 1rem;
+    margin-bottom: 1rem;
 }
 
 button, select {
-    font-family: 'Orbitron', sans-serif;
+    font-family: 'Exo 2', sans-serif;
     font-size: 1rem;
     padding: 0.5rem 1rem;
     cursor: pointer;
-    background-color: #e94560;
-    color: white;
+    background-color: #4ed9ff;
+    color: #0c0e1a;
     border: none;
     border-radius: 5px;
-    transition: background-color 0.3s, transform 0.3s;
+    transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
 }
 
 button:hover, select:hover {
-    background-color: #ff6b6b;
+    background-color: #7ae7ff;
     transform: scale(1.05);
-}
-
-.star {
-    position: absolute;
-    background-color: #ffffff;
-    width: 2px;
-    height: 2px;
-    border-radius: 50%;
-    opacity: 0;
-    animation: twinkle 5s infinite;
-}
-
-@keyframes twinkle {
-    0% { opacity: 0; }
-    50% { opacity: 1; }
-    100% { opacity: 0; }
+    box-shadow: 0 0 15px rgba(78, 217, 255, 0.5);
 }
 
 .modal {
@@ -143,20 +135,60 @@ button:hover, select:hover {
 }
 
 .modal-content {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(42, 61, 102, 0.9);
     margin: 15% auto;
     padding: 20px;
     border-radius: 20px;
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+    box-shadow: 0 0 30px rgba(78, 217, 255, 0.5);
     width: 80%;
     max-width: 400px;
     text-align: center;
-    animation: fadeIn 0.5s;
+    animation: cosmic-fade-in 0.5s;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+@keyframes cosmic-fade-in {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+#progress-bar-container {
+    width: 100%;
+    height: 10px;
+    background-color: #2a3d66;
+    border-radius: 5px;
+    margin-top: 1rem;
+    overflow: hidden;
+}
+
+#progress-bar {
+    width: 0%;
+    height: 100%;
+    background-color: #4ed9ff;
+    transition: width 0.5s ease-in-out;
+}
+
+#particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.particle {
+    position: absolute;
+    background-color: #4ed9ff;
+    width: 2px;
+    height: 2px;
+    border-radius: 50%;
+    animation: float 15s infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0) translateX(0); }
+    50% { transform: translateY(-100px) translateX(50px); }
 }
 
 @media (max-width: 600px) {
